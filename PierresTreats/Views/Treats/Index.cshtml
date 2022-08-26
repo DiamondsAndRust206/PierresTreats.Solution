@@ -1,0 +1,26 @@
+@{
+  Layout = "_Layout";
+}
+
+@using PierresTreats.Models;
+@model IEnumerable<PierresTreats.Models.Treat>
+
+<h1>@User.Identity.Name favorite treats:</h1>
+
+@if (Model.Any())
+{
+  <ol>
+    @foreach (Treat treat in Model)
+      {
+        <li>@Html.ActionLink($"{treat.Name}", "Details", new { id = treat.TreatId })</li>
+      }
+  </ol>
+} 
+else
+{
+  <h3>No treats have been added yet!</h3>
+}
+
+<p>@Html.ActionLink("Add new treat", "Create")</p>
+
+<p>@Html.ActionLink("Home", "Index", "Home")</p>

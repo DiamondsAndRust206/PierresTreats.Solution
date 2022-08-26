@@ -1,0 +1,30 @@
+@{
+  Layout = "_Layout";
+}
+
+@model PierresTreats.Models.Treat
+
+<h2>Edit</h2>
+
+<h4>Edit this treat: @Html.DisplayFor(model => model.Name)</h4>
+
+@using (Html.BeginForm())
+{
+  @Html.HiddenFor(model => model.TreatId)
+
+  @Html.LabelFor(model => model.Name)
+  @Html.EditorFor(model => model.Name)
+
+  @* @Html.LabelFor(model => model.Ingredients)
+  @Html.EditorFor(model => model.Ingredients) *@
+
+  @Html.Label("Select Price")
+  @Html.TextBoxFor(model => model.Price, new { @type="number", min="1", max="5"})
+
+  @Html.Label("Select Flavor")
+  @Html.DropDownList("FlavorId")
+
+  <input type="submit" value="Save" />
+}
+
+<p>@Html.ActionLink("Back to list", "Index")</p>
