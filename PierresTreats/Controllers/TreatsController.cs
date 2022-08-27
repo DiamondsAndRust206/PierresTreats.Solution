@@ -16,14 +16,22 @@ namespace PierresTreats.Controllers
     private readonly PierresTreatsContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public TreatsController(PierresTreatsContext db)
+    public TreatsController(UserManager<ApplicationUser> userManager, PierresTreatsContext db)
     {
+      _userManager = userManager;
       _db = db;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-      return View(_db.Treats.ToList());
+      var userTreats = _db.Treats.ToList();
+      if (User.Identity.IsAuthenticated){
+        var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUser = await _userManager.FindByIdAsync(userId);
+        userTreats = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).ToList();
+      }
+        
+      return View(userTreats);
     }
     
     [Authorize]
@@ -54,7 +62,7 @@ namespace PierresTreats.Controllers
     {
       var thisTreat = _db.Treats
         .Include(treat => treat.JoinEntities)
-        .ThenInclude(join => join.Category)
+        .ThenInclude(join => join.Flavor)
         .FirstOrDefault(treat => treat.TreatId == id);
         return View(thisTreat);
     }
@@ -124,3 +132,5 @@ namespace PierresTreats.Controllers
 
   }
 }
+
+
